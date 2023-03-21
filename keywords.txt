@@ -14,7 +14,6 @@ RemoteSignal	KEYWORD1
 #######################################
 
 update	KEYWORD2
-overflow	KEYWORD2
 setStream	KEYWORD2
 write	KEYWORD2
 send	KEYWORD2

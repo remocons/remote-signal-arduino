@@ -28,6 +28,7 @@ class CongPacket
     BODY = 5,
     READY = 6,
   
+    // 0xFA(250)+  big issue. connection will be disconnected. 
     UNKNOWN_TYPE = 253,
     OVER_SIZE = 254,
     OVER_FLOW = 255

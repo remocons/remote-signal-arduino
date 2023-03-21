@@ -16,7 +16,7 @@ within the Arduino application.
 - CID: Communication Id.
 - HomeChannel: group by IP address.
 
-### Embedded Security
+### Built-in Security
 - Authentication
 - Encryption
 - E2EE
