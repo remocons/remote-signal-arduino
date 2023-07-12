@@ -1,7 +1,6 @@
 /*
  *  Remote Signal Example. 
- *  SparkFun ESP8266 Thing - Dev Board + Button
- *  You can use general ESP8266 board too.
+ *  Arduino Uno R4 WiFi
  *
  *  Dongeun Lee <sixgen@gmail.com>
  *  https://github.com/congtrol/remote-signal-arduino
@@ -10,16 +9,20 @@
  */
 
 
+#include "WiFiS3.h"
 #include <Arduino.h>
-#include <ESP8266WiFiMulti.h>
 #include <RemoteSignal.h>
+#include "Arduino_LED_Matrix.h"
 
-#define TCP_PORT 55488
+#define SERVER_URL "tt.congtrol.com"
+#define SERVER_PORT 55488
+
+ArduinoLEDMatrix matrix;
+
+// WiFi
 const char* ssid = "WIFI_SSID";
 const char* pass = "WIFI_PASS";
-const char *server = "tt.congtrol.com"; 
 
-ESP8266WiFiMulti wifiMulti;
 WiFiClient client;
 RemoteSignal remote;
 const char *ui = "on,off,toggle";
@@ -27,23 +30,27 @@ const char *ui = "on,off,toggle";
 const int buttonPin = 2;
 int lastButtonState = HIGH; 
 
+const uint32_t heart[] = { 0x3184a444, 0x44042081, 0x100a0040 };
+const uint32_t fullOff[] = { 0, 0, 0 };
+
 void deviceOn(){
-  digitalWrite(LED_BUILTIN, LOW); // Low means ON
+  digitalWrite(LED_BUILTIN, HIGH);
+  matrix.loadFrame(heart);
   remote.signal("@$state", "on" );
 }
 
 void deviceOff(){
-  digitalWrite(LED_BUILTIN, HIGH);
+  digitalWrite(LED_BUILTIN, LOW);
+  matrix.loadFrame(fullOff);
   remote.signal("@$state", "off" );
 }
 
 void deviceToggle(){
   int nextState = !digitalRead(LED_BUILTIN);
-  digitalWrite(LED_BUILTIN, nextState);
    if( nextState){
-    remote.signal("@$state", "off" );
+      deviceOn();
    }else{
-    remote.signal("@$state", "on" );
+      deviceOff();
    }
 }
 
@@ -63,13 +70,13 @@ void setup() {
   pinMode(buttonPin, INPUT_PULLUP);
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, HIGH);
-
-  WiFi.mode(WIFI_STA);
-  wifiMulti.addAP(ssid, pass);
-  // wifiMulti.addAP("SECOND_SSID", "AP_KEY");  
-  // You can register multiple APs.
-
+  
+  WiFi.begin(ssid, pass);
   Serial.begin(115200);
+  matrix.begin();
+  matrix.loadFrame(heart);
+  delay(500);
+
   remote.setRxBuffer( 200 );
 
   // device authentication.
@@ -78,7 +85,8 @@ void setup() {
 
   // type2. If you have one id_key string.
   // remote.auth( "id_key" );
-  
+
+
   remote.setStream( &client );
   remote.onReady( &onReadyHandler );
   remote.onMessage( &onMessageHandler );
@@ -105,7 +113,7 @@ void loop() {
 
       if(isPressed()){
         Serial.println(F("pressed"));
-
+        deviceToggle();
       // type 1. Multicasting to a public channel
         // remote.signal("public_button", "click" );  // simple channel
         // remote.signal("public#button", "click" );  // Separate channel names and a topic with # marks.
@@ -113,7 +121,8 @@ void loop() {
       // type 2. Multicasting to a Private HOME_CHANNEL 
       // Omitting the channel name allows devices with the same global IP address to communicate.
         // remote.signal("#button", "click" );  // Omit the channel name and separate it from the topic with a # marker.
-        remote.signal("#screen", "next" );
+        remote.signal("#screen", "playToggle" );
+        // remote.signal("#screen", "next" );
 
       // type 3. To make a uni-cast transmission, you need to know the CID of the recipient.
         // remote.signal("cid@", "click" );   // Follow the recipient's CID with the @ character.
@@ -122,7 +131,7 @@ void loop() {
     
     } else if( WiFi.status() != WL_CONNECTED ){ 
 
-      if( wifiMulti.run() == WL_CONNECTED ){
+      if( WiFi.begin(ssid, pass) == WL_CONNECTED ){
         Serial.println("WiFi connected.");
       }else{
         Serial.print("w");
@@ -132,7 +141,7 @@ void loop() {
     }else{ 
       remote.clear();
       delay(2000); 
-      if(client.connect( server , TCP_PORT) ){
+      if(client.connect( SERVER_URL , SERVER_PORT) ){
         Serial.println("Server connected.");
       }else{
         Serial.print("s");
@@ -190,3 +199,4 @@ void onMessageHandler( char *tag, uint8_t payloadType, uint8_t* payload, size_t 
   }
       
 }
+

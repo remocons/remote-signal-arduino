@@ -15,8 +15,6 @@
 
 #define TCP_PORT 55488
 const char *server = "tt.congtrol.com";  
-const char *deviceId = "deviceid";
-const char *deviceKey = "devicekey";
 
 // If you have multiple devices, you'll need to change the MAC address.
 byte mac[]{0, 0, 0, 0, 0, 0x07}; 
@@ -43,8 +41,12 @@ void setup() {
   remote.setRxBuffer( 80 );
   remote.setStream( &client );
 
-  // If you have a device ID and device key
-  // remote.auth(deviceId, deviceKey); 
+  // device authentication.
+  // type1. If you have a deviceId and a deviceKey.
+  // remote.auth( "deviceId", "deviceKey" );
+
+  // type2. If you have one id_key string.
+  // remote.auth( "id_key" );
 
   remote.onReady( &onReadyHandler );
   remote.onMessage( &onMessageHandler );

@@ -29,10 +29,11 @@ The library uses Stream for interacting with the
 underlying network hardware. This means it Just Works with a growing number of
 boards and shields, including:
 
+### tested
  - Arduino Ethernet Shield
  - ESP8266
  - ESP32
-
+ - Arduino UNO R4 WiFi
 
 ## Compatibility
  - Support Remote Signal Sever only.

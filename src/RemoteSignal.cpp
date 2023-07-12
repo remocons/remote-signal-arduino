@@ -336,21 +336,24 @@ void RemoteSignal::close(uint8_t reason)
 void RemoteSignal::login(const char *auth_id, const char *auth_key)
 {
   // instance manual login.
-  //  Serial.println(F("<< TRY LOGIN"));
-  //  setStrID( auth_id);
   set_id8(auth_id);
   set_key(auth_key);
-
   size_t size = auth_req(_buffer);
   send(_buffer, size);
 }
 
 void RemoteSignal::auth(const char *auth_id, const char *auth_key)
 {
-  // automatic auth_req when sever ready,
-  // re_auth when reconnect
+  // automatic
+  // send auth_req when sever ready, re_auth when reconnect
   set_id8(auth_id);
   set_key(auth_key);
+  useAuth = true;
+}
+
+void RemoteSignal::auth(const char *id_key)
+{
+  set_id_key( id_key );
   useAuth = true;
 }
 

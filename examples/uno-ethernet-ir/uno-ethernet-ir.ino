@@ -26,8 +26,6 @@ volatile struct TinyIRReceiverCallbackDataStruct sCallbackData;
 
 #define TCP_PORT 55488
 const char *server = "tt.congtrol.com";
-const char *deviceId = "deviceid";
-const char *deviceKey = "devicekey";
 
 // If you have multiple devices, you'll need to change the MAC address.
 byte mac[]{0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0x06};
@@ -55,8 +53,12 @@ void setup()
   remote.setRxBuffer(80);
   remote.setStream(&client);
 
-  // If you have a device ID and device key
-  // remote.auth(deviceId, deviceKey); 
+  // device authentication.
+  // type1. If you have a deviceId and a deviceKey.
+  // remote.auth( "deviceId", "deviceKey" );
+
+  // type2. If you have one id_key string.
+  // remote.auth( "id_key" );
   
   remote.onReady(&onReadyHandler);
   remote.onMessage(&onMessageHandler);
@@ -119,26 +121,26 @@ void loop()
         switch (sCallbackData.Command)
         {
         // Change to the code value of your NEC compatible remote
-        case 0xFE: // 0x01 :
+        case 0x01 :
           remote.signal("#screen", "next");
           break;
-        case 0xF7: // 0x08 :
+        case 0x08 :
           remote.signal("#screen", "prev");
           break;
-        case 0xFA: // 0x05 :
+        case 0x05 :
           remote.signal("#screen", "up");
           break;
-        case 0xFF: // 0 :
+        case 0 :
           remote.signal("#screen", "down");
           break;
-        case 0xE0: // 0x1F :
-          deviceOn();
+        case 0x1F :
+          deviceToggle(); 
           break;
-        case 0xE1: // 0x1E :
-          deviceOff();
+        case 0x1E :
+          remote.signal("cid1@", "toggle");
           break;
-        case 0xE5: // 0x1A :
-          deviceToggle();
+        case 0x1A :
+          remote.signal("cid2@", "toggle");
           break;
         default:
           remote.signal("#screen", "playToggle");

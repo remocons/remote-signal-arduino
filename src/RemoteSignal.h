@@ -7,7 +7,7 @@
 #include <Boho.h>
 
 #define DEFAULT_TX_BUF_SIZE 50
-#define MAX_CID_LEN 20
+#define MAX_CID_LEN 12
 
 // USE_PSRAM: If you need large size memory on ESP boards which has PSRAM.
 // #define USE_PSRAM
@@ -130,6 +130,7 @@ public:
 
   void login(const char *auth_id, const char *auth_key);
   void auth(const char *auth_id, const char *auth_key);
+  void auth(const char *auth_id_key);
   uint8_t useAuth;
 
   void set(const char *setString);
