@@ -1,6 +1,6 @@
 # Arduino Client for Remote Signal
 
-This library provides a client for doing signaling(messaging) with a server that supports [`RemoteSignal`](https://github.com/congtrol/remote-signal).
+This library provides a client for doing signaling(messaging) with a server that supports [`RemoteSignal`](https://github.com/remocons/remote-signal).
 
 ## Examples
 
@@ -20,7 +20,7 @@ within the Arduino application.
 - Authentication
 - Encryption
 - E2EE
-- thanks to the `Boho` [ [github](https://github.com/congtrol/boho-arduino) ]
+- thanks to the `Boho` [ [github](https://github.com/remocons/boho-arduino) ]
 
 
 ## Compatible Hardware
@@ -40,15 +40,15 @@ boards and shields, including:
  - No MQTT protocol support.
 
 ## Remote Signal repositories.
-- Javascript: `remote-signal` [ [github](https://github.com/congtrol/remote-signal) | [npm](https://www.npmjs.com/package/remote-signal) ]
+- Javascript: `remote-signal` [ [github](https://github.com/remocons/remote-signal) | [npm](https://www.npmjs.com/package/remote-signal) ]
   - Node.js server
   - Node.js client ( WebSocket, CongSocket)
   - Web Browser client( WebSocket)
 - Arduino client: 
-  - `remote-signal-arduino` [ [github](https://github.com/congtrol/remote-signal-arduino) ]
+  - `remote-signal-arduino` [ [github](https://github.com/remocons/remote-signal-arduino) ]
   - or use Arduino Library Manager: `RemoteSignal`
 - CLI program 
-  - `remocon` [ [github](https://github.com/congtrol/remocon) | [npm](https://www.npmjs.com/package/remocon) ]
+  - `remocon` [ [github](https://github.com/remocons/remocon) | [npm](https://www.npmjs.com/package/remocon) ]
   - install: `npm i -g remocon`
   - support mac, linux and windows.
   - server and client
