@@ -14,7 +14,7 @@ RemoteSignal	KEYWORD1
 #######################################
 
 update	KEYWORD2
-setStream	KEYWORD2
+setClient	KEYWORD2
 write	KEYWORD2
 send	KEYWORD2
 send_enc_mode	KEYWORD2

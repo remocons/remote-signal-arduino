@@ -1,9 +1,10 @@
+
 /*
  *  Remote Signal Example. 
  *  Arduino Uno + Ethernet shield W5100 + Button
  * 
- *  Dongeun Lee <sixgen@gmail.com>
- *  https://github.com/congtrol/remote-signal-arduino
+ *  Lee Dongeun <sixgen@gmail.com>
+ *  https://github.com/remocons/remote-signal-arduino
  *
  *  MIT License
  */
@@ -12,9 +13,10 @@
 #include <Ethernet.h>
 #include <string.h>
 #include <RemoteSignal.h>
+#include <Bounce2.h>
 
 #define TCP_PORT 55488
-const char *server = "tt.congtrol.com";  
+const char *server = "io.remocon.kr";  
 
 // If you have multiple devices, you'll need to change the MAC address.
 byte mac[]{0, 0, 0, 0, 0, 0x07}; 
@@ -39,13 +41,10 @@ void setup() {
   Serial.println(Ethernet.localIP());
   
   remote.setRxBuffer( 80 );
-  remote.setStream( &client );
+  remote.setClient( &client );
 
   // device authentication.
-  // type1. If you have a deviceId and a deviceKey.
-  // remote.auth( "deviceId", "deviceKey" );
-
-  // type2. If you have one id_key string.
+  // type1. If you have one id_key string.
   // remote.auth( "id_key" );
 
   remote.onReady( &onReadyHandler );

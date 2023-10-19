@@ -2,8 +2,7 @@
 #include "RemoteSignal.h"
 #include <Arduino.h>
 #include <string.h>
-#include <CongPacket.h>
-#include <Boho.h>
+#include "Client.h"
 
 RemoteSignal::RemoteSignal()
 {
@@ -13,24 +12,6 @@ RemoteSignal::RemoteSignal()
   cong = CongPacket();
 }
 
-void RemoteSignal::setRxBuffer(size_t size)
-{
-  // Serial.println(F("-- setRxBuffer: "));
-
-#ifdef USE_PSRAM
-  uint8_t *buf = (uint8_t *)ps_malloc(size);
-#else
-  uint8_t *buf = (uint8_t *)malloc(size);
-#endif
-
-  if (buf == NULL)
-  {
-    // Serial.println(F("\n-- NO RX_BUFFER!"));
-    return;
-  }
-
-  cong.setBufferSize(buf, size);
-}
 
 // return code: 
 // 0: okay  
@@ -212,6 +193,30 @@ uint8_t RemoteSignal::update()
     return RemoteSignal::MsgType::SERVER_REQ_CLOSE;
   }
 
+  case RemoteSignal::MsgType::SERVER_REDIRECT:
+  {
+    // Serial.println("redirection");
+    if( len == 7){  // 1 MsgType, ip4, port2 
+      cong.clear();
+      close(RemoteSignal::MsgType::SERVER_REDIRECT);
+      
+      uint8_t ip[4] = {};
+      memcpy( ip, message + 1, 4);
+      uint16_t port = (message[5] << 8 ) + message[6];
+    
+    // boho_print_hex("redirect", message + 1, 4 );
+    // Serial.print( " port:");
+    // Serial.println( port);
+      this->client->connect( ip, port );
+
+      if (tmpbuf != NULL) free(tmpbuf);
+      return RemoteSignal::MsgType::SERVER_REDIRECT;
+
+    }else{
+      break;
+    }
+  }
+
   case Boho::MsgType::AUTH_NONCE:
   {
     uint8_t authPack[MetaSize_AUTH_HMAC];
@@ -252,32 +257,43 @@ uint8_t RemoteSignal::update()
   return 0;
 }
 
-void RemoteSignal::setStream(Stream *client)
+
+
+
+void RemoteSignal::setClient(Client *client)
 {
-  this->stream = client;
+  this->client = client;
   cong.init(client);
 }
 
-void RemoteSignal::onMessage(void (*messageCallback)(char *, uint8_t, uint8_t *, size_t))
+
+
+void RemoteSignal::setRxBuffer(size_t size)
 {
-  this->messageCallback = messageCallback;
+  // Serial.println(F("-- setRxBuffer: "));
+
+#ifdef USE_PSRAM
+  uint8_t *buf = (uint8_t *)ps_malloc(size);
+#else
+  uint8_t *buf = (uint8_t *)malloc(size);
+#endif
+
+  if (buf == NULL)
+  {
+    // Serial.println(F("\n-- NO RX_BUFFER!"));
+    return;
+  }
+
+  cong.setBufferSize(buf, size);
 }
 
-void RemoteSignal::onReady(void (*readyCallback)(void))
-{
-  this->readyCallback = readyCallback;
-}
 
-void RemoteSignal::clear(void)
-{
-  cong.drop();
-  cong.clear();
-  isAuthorized = false;
-}
+
+
 
 void RemoteSignal::write(const uint8_t *buffer, uint32_t size)
 {
-  this->stream->write(buffer, size);
+  this->client->write(buffer, size);
 }
 
 void RemoteSignal::send(const uint8_t *buffer, uint32_t size)
@@ -324,14 +340,6 @@ void RemoteSignal::pong()
   send(_buffer, 1);
 }
 
-void RemoteSignal::close(uint8_t reason)
-{
-  _buffer[0] = RemoteSignal::MsgType::CLOSE;
-  _buffer[1] = reason;
-  send(_buffer, 2);
-  this->stream->flush();
-  clear();
-}
 
 void RemoteSignal::login(const char *auth_id, const char *auth_key)
 {
@@ -686,6 +694,35 @@ void RemoteSignal::signal2_e2e(const char *target, const char *topic, const uint
   tag[targetLen + topicLen] = 0;
   signal_e2e(tag, data, dataLen, dataKey);
 }
+
+void RemoteSignal::onMessage(void (*messageCallback)(char *, uint8_t, uint8_t *, size_t))
+{
+  this->messageCallback = messageCallback;
+}
+
+void RemoteSignal::onReady(void (*readyCallback)(void))
+{
+  this->readyCallback = readyCallback;
+}
+
+
+
+void RemoteSignal::close(uint8_t reason)
+{
+  _buffer[0] = RemoteSignal::MsgType::CLOSE;
+  _buffer[1] = reason;
+  send(_buffer, 2);
+  this->client->flush();
+  clear();
+}
+
+void RemoteSignal::clear(void)
+{
+  cong.drop();
+  cong.clear();
+  isAuthorized = false;
+}
+
 
 RemoteSignal::~RemoteSignal()
 {

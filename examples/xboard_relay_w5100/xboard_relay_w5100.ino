@@ -2,8 +2,8 @@
  *  Remote Signal Example. 
  *  DFRobot Xboard Relay ( Leonardo + W5100 ethernet )
  * 
- *  Dongeun Lee <sixgen@gmail.com>
- *  https://github.com/congtrol/remote-signal-arduino
+ *  Lee Dongeun <sixgen@gmail.com>
+ *  https://github.com/remocons/remote-signal-arduino
  *
  *  MIT License
  */
@@ -18,7 +18,7 @@
 #define RELAY2 8
 
 #define TCP_PORT 55488
-const char *server = "tt.congtrol.com";
+const char *server = "io.remocon.kr";
 
 // If you have multiple devices, you'll need to change the MAC address.
 byte mac[]{0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0x19};
@@ -40,7 +40,7 @@ void setup() {
   Serial.println(Ethernet.localIP());
   
   remote.setRxBuffer( 80 );
-  remote.setStream( &client );
+  remote.setClient( &client );
 
   // device authentication.
   // type1. If you have a deviceId and a deviceKey.

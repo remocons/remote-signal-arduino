@@ -5,6 +5,7 @@
 #include <Arduino.h>
 #include <CongPacket.h>
 #include <Boho.h>
+#include "Client.h"
 
 #define DEFAULT_TX_BUF_SIZE 50
 #define MAX_CID_LEN 12
@@ -60,6 +61,7 @@ public:
     CID_RES = 0xC2,
     QUOTA_LEVEL = 0xC3,
     SERVER_CLEAR_AUTH = 0xC4,
+    SERVER_REDIRECT = 0xC5,
     // ..
     LOOP = 0xCB,
     ECHO = 0xCC,
@@ -115,9 +117,11 @@ public:
     AUTO = 2
   };
 
-  uint8_t update();
-  void setStream(Stream *client);
 
+  uint8_t update();
+
+  void setClient(Client *client);
+  void setRxBuffer(size_t size);
   void write(const uint8_t *buffer, uint32_t size);
 
   void send(const uint8_t *buffer, uint32_t size);
@@ -125,8 +129,6 @@ public:
 
   void ping();
   void pong();
-
-  void close(uint8_t reason);
 
   void login(const char *auth_id, const char *auth_key);
   void auth(const char *auth_id, const char *auth_key);
@@ -149,11 +151,14 @@ public:
 
   void onMessage(void (*messageCallback)(char *, uint8_t, uint8_t *, size_t));
   void onReady(void (*readyCallback)(void));
+
+
+  void close(uint8_t reason);
   void clear(void);
-  void setRxBuffer(size_t size);
+
 
   uint8_t _buffer[DEFAULT_TX_BUF_SIZE];
-  Stream *stream;
+  Client *client;
 
   union u32buf4 packetLength;
 
@@ -164,6 +169,8 @@ public:
 
   uint8_t encMode = RemoteSignal::ENC_MODE::AUTO;
 
+  // uint8_t server[4] = {192,168,0,101};
+  // uint16_t port = 55557L;
 private:
   void (*messageCallback)(char *, uint8_t, uint8_t *, size_t);
   void (*readyCallback)(void);

@@ -2,8 +2,8 @@
  *  Remote Signal Example. 
  *  Arduino Uno R4 WiFi
  *
- *  Dongeun Lee <sixgen@gmail.com>
- *  https://github.com/congtrol/remote-signal-arduino
+ *  Lee Dongeun <sixgen@gmail.com>
+ *  https://github.com/remocons/remote-signal-arduino
  *
  *  MIT License
  */
@@ -14,7 +14,7 @@
 #include <RemoteSignal.h>
 #include "Arduino_LED_Matrix.h"
 
-#define SERVER_URL "tt.congtrol.com"
+#define SERVER_URL "io.remocon.kr"
 #define SERVER_PORT 55488
 
 ArduinoLEDMatrix matrix;
@@ -87,7 +87,7 @@ void setup() {
   // remote.auth( "id_key" );
 
 
-  remote.setStream( &client );
+  remote.setClient( &client );
   remote.onReady( &onReadyHandler );
   remote.onMessage( &onMessageHandler );
 

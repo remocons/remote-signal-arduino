@@ -3,8 +3,8 @@
  *  SparkFun ESP8266 Thing - Dev Board + Button
  *  You can use general ESP8266 board too.
  *
- *  Dongeun Lee <sixgen@gmail.com>
- *  https://github.com/congtrol/remote-signal-arduino
+ *  Lee Dongeun <sixgen@gmail.com>
+ *  https://github.com/remocons/remote-signal-arduino
  *
  *  MIT License
  */
@@ -17,7 +17,7 @@
 #define TCP_PORT 55488
 const char* ssid = "WIFI_SSID";
 const char* pass = "WIFI_PASS";
-const char *server = "tt.congtrol.com"; 
+const char *server = "io.remocon.kr"; 
 
 ESP8266WiFiMulti wifiMulti;
 WiFiClient client;
@@ -79,7 +79,7 @@ void setup() {
   // type2. If you have one id_key string.
   // remote.auth( "id_key" );
   
-  remote.setStream( &client );
+  remote.setClient( &client );
   remote.onReady( &onReadyHandler );
   remote.onMessage( &onMessageHandler );
 

@@ -2,8 +2,8 @@
  *  Remote Signal Example. 
  *  Arduino Uno + Ethernet shield W5100 + IR Receiver
  * 
- *  Dongeun Lee <sixgen@gmail.com>
- *  https://github.com/congtrol/remote-signal-arduino
+ *  Lee Dongeun <sixgen@gmail.com>
+ *  https://github.com/remocons/remote-signal-arduino
  *
  *  I used a library for a low-capacity NEC-compatible remote.
  *  If you are using a different remote, change the library
@@ -25,7 +25,7 @@
 volatile struct TinyIRReceiverCallbackDataStruct sCallbackData;
 
 #define TCP_PORT 55488
-const char *server = "tt.congtrol.com";
+const char *server = "io.remocon.kr";
 
 // If you have multiple devices, you'll need to change the MAC address.
 byte mac[]{0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0x06};
@@ -51,7 +51,7 @@ void setup()
   Serial.println(Ethernet.localIP());
 
   remote.setRxBuffer(80);
-  remote.setStream(&client);
+  remote.setClient(&client);
 
   // device authentication.
   // type1. If you have a deviceId and a deviceKey.
