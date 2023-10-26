@@ -195,20 +195,22 @@ uint8_t RemoteSignal::update()
 
   case RemoteSignal::MsgType::SERVER_REDIRECT:
   {
-    // Serial.println("redirection");
+
     if( len == 7){  // 1 MsgType, ip4, port2 
       cong.clear();
       close(RemoteSignal::MsgType::SERVER_REDIRECT);
-      
-      uint8_t ip[4] = {};
-      memcpy( ip, message + 1, 4);
+  
+      char ipString[16];
+      sprintf(ipString,  "%d.%d.%d.%d\0", message[1], message[2], message[3], message[4]);
       uint16_t port = (message[5] << 8 ) + message[6];
-    
-    // boho_print_hex("redirect", message + 1, 4 );
-    // Serial.print( " port:");
-    // Serial.println( port);
-      this->client->connect( ip, port );
+      
+      // Serial.println("redirection");
+      // boho_print_hex("ip hex:", message + 1, 4 );
+      // Serial.print( "host port:");
+      // Serial.print(ipString);
+      // Serial.println( port);
 
+      this->client->connect( ipString , port );
       if (tmpbuf != NULL) free(tmpbuf);
       return RemoteSignal::MsgType::SERVER_REDIRECT;
 
