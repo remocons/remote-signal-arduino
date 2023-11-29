@@ -22,7 +22,8 @@ enum class STATES
   SERVER_READY, // 4
   AUTH_FAIL,    // 5
   AUTH_READY,   // 6
-  READY         // 7
+  READY,        // 7
+  REDIRECTING   // 8
 };
 
 class RemoteSignal final : public Boho

@@ -101,8 +101,8 @@ void loop() {
       uint8_t conditionCode = remote.update();
       if(conditionCode != 0 ){ 
           // some warning or error. 
-          // Serial.print("E");
-          // Serial.println( conditionCode);
+          Serial.print("E");
+          Serial.println( conditionCode);
         if(conditionCode >= 250){
           // big issue.
           Serial.println(F("disconnect!"));

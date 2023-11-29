@@ -188,7 +188,6 @@ uint8_t RemoteSignal::update()
     useAuth = false;
     clearAuth(); // Boho::clearAuth()
     if (tmpbuf != NULL) free(tmpbuf);
-    cong.clear();
     close(RemoteSignal::MsgType::SERVER_REQ_CLOSE);
     return RemoteSignal::MsgType::SERVER_REQ_CLOSE;
   }
@@ -197,7 +196,7 @@ uint8_t RemoteSignal::update()
   {
 
     if( len == 7){  // 1 MsgType, ip4, port2 
-      cong.clear();
+      state = static_cast<int>(STATES::REDIRECTING);
       close(RemoteSignal::MsgType::SERVER_REDIRECT);
   
       char ipString[16];
@@ -206,11 +205,17 @@ uint8_t RemoteSignal::update()
       
       // Serial.println("redirection");
       // boho_print_hex("ip hex:", message + 1, 4 );
-      // Serial.print( "host port:");
+      // Serial.print( "host: ");
       // Serial.print(ipString);
+      // Serial.print( " port: ");
       // Serial.println( port);
 
-      this->client->connect( ipString , port );
+      if( this->client->connect( ipString , port ) ){
+        Serial.println( "redirection connected");
+      }else{
+        Serial.println( "redirection faild");
+      }
+
       if (tmpbuf != NULL) free(tmpbuf);
       return RemoteSignal::MsgType::SERVER_REDIRECT;
 
@@ -267,7 +272,6 @@ void RemoteSignal::setClient(Client *client)
   this->client = client;
   cong.init(client);
 }
-
 
 
 void RemoteSignal::setRxBuffer(size_t size)
