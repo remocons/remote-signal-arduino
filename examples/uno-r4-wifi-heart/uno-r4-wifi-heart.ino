@@ -25,6 +25,7 @@ const char* pass = "WIFI_PASS";
 
 WiFiClient client;
 RemoteSignal remote;
+const char *name = "UnoR4-WiFi:HOME";
 const char *ui = "on,off,toggle";
 
 const int buttonPin = 2;
@@ -158,6 +159,7 @@ void onReadyHandler()
   Serial.print("onReady cid: ");
   Serial.println( remote.cid );
   remote.signal("@$state", "off" );
+  remote.signal("@$name", name );
   remote.signal("@$ui", ui );
   remote.signal("#notify", remote.cid );
   remote.subscribe("#search");

@@ -8,7 +8,6 @@
  *  MIT License
  */
 
-#define DECODE_NEC
 
 #include <ESP8266WiFiMulti.h>
 #include <RemoteSignal.h>

@@ -24,7 +24,7 @@ RemoteSignal remote;
 
 Bounce2::Button aBtn = Bounce2::Button();
 
-const char *name = "D1 mini:esp8266";
+const char *name = "D1-mini:home";
 const char *ui = "on,off,toggle";
 
 

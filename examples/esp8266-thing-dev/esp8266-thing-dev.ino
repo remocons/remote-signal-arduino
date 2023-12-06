@@ -22,6 +22,7 @@ const char *server = "io.remocon.kr";
 ESP8266WiFiMulti wifiMulti;
 WiFiClient client;
 RemoteSignal remote;
+const char *name = "SFE-thing-dev:home";
 const char *ui = "on,off,toggle";
 
 const int buttonPin = 2;
@@ -150,6 +151,7 @@ void onReadyHandler()
   Serial.println( remote.cid );
   remote.signal("@$state", "off" );
   remote.signal("@$ui", ui );
+  remote.signal("@$name", name );
   remote.signal("#notify", remote.cid );
   remote.subscribe("#search");
   

@@ -23,6 +23,7 @@ byte mac[]{0, 0, 0, 0, 0, 0x07};
 // IPAddress ip(192, 168, 1, 3);
 EthernetClient client;
 RemoteSignal remote;
+const char *name = "UnoR3-EthBtn:HOME";
 const char *ui = "on,off,toggle";
 
 const int buttonPin = 2;
@@ -143,6 +144,7 @@ void onReadyHandler()
   Serial.println( remote.cid );
   remote.signal("@$state", "off" );
   remote.signal("@$ui", ui );
+  remote.signal("@$name", name );
   remote.signal("#notify", remote.cid );
   remote.subscribe("#search");
   

@@ -32,6 +32,7 @@ byte mac[]{0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0x06};
 // IPAddress ip(192, 168, 1, 3);
 EthernetClient client;
 RemoteSignal remote;
+const char *name = "UnoR3-Eth-IR:HOME";
 const char *ui = "on,off,toggle";
 
 void setup()
@@ -181,6 +182,7 @@ void onReadyHandler()
   Serial.print(F("onReady cid: "));
   Serial.println(remote.cid);
   remote.signal("@$state", "off");
+  remote.signal("@$name", name );
   remote.signal("@$ui", ui);
   remote.signal("#notify", remote.cid);
   remote.subscribe("#search");
